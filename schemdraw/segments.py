@@ -36,10 +36,6 @@ def roundcorners(verts: Sequence[XY], radius: float = .5) -> Sequence[XY]:
         dx2 = p2[0]-p3[0]
         dy2 = p2[1]-p3[1]
 
-        angle = (math.atan2(dy1, dx1) - math.atan2(dy2, dx2))/2
-        tan = abs(math.tan(angle))
-        segment = radius/tan
-
         def getlength(x, y):
             return math.sqrt(x*x + y*y)
 
@@ -49,6 +45,15 @@ def roundcorners(verts: Sequence[XY], radius: float = .5) -> Sequence[XY]:
 
         length1 = getlength(dx1, dy1)
         length2 = getlength(dx2, dy2)
+
+        if length1 < 1e-10 or length2 < 1e-10:
+            continue  # Skip degenerate corner (duplicate vertices)
+
+        angle = (math.atan2(dy1, dx1) - math.atan2(dy2, dx2))/2
+        tan = abs(math.tan(angle))
+        if tan < 1e-10:
+            continue  # Skip degenerate corner (collinear/backtracking)
+        segment = radius/tan
         length = min(length1, length2)
 
         if segment > length:
@@ -155,6 +160,8 @@ class Segment:
         hw = self.arrowwidth if self.arrow else 0
         x = [p[0] for p in self.path]
         y = [p[1] for p in self.path]
+        if not x:
+            return BBox(0, 0, 0, 0)
         return BBox(min(x), min(y)-hw, max(x), max(y)+hw)
 
     def doreverse(self, centerx: float) -> None:
@@ -339,7 +346,7 @@ class SegmentText:
             if params['rotation'] is None:
                 params['rotation'] = transform.theta
             else:
-                params['rotation'] = params['rotation'] + transform.theta % 360
+                params['rotation'] = (params['rotation'] + transform.theta) % 360
 
         return SegmentText(transform.transform(self.xy),
                            self.text, **params)
@@ -405,7 +412,7 @@ class SegmentText:
             if rotation is None:
                 rotation = transform.theta
             else:
-                rotation = rotation + transform.theta % 360
+                rotation = (rotation + transform.theta) % 360
 
         fig.text(self.text, xy[0], xy[1],
                  color=color, fontsize=fontsize, fontfamily=font, mathfont=mathfont,
@@ -506,6 +513,8 @@ class SegmentPoly:
         '''
         x = [p[0] for p in self.verts]
         y = [p[1] for p in self.verts]
+        if not x:
+            return BBox(0, 0, 0, 0)
         return BBox(min(x), min(y), max(x), max(y))
 
     def draw(self, fig, transform, **style) -> None:
@@ -616,7 +625,7 @@ class SegmentCircle:
         
         # Asymmetric zoom makes circle into ellipse
         params.pop('ref', None)  # Not implemented in SegmentArc
-        return SegmentArc(self.center,
+        return SegmentArc(transform.transform(self.center),
                           width=self.radius*2*transform.zoom[0],
                           height=self.radius*2*transform.zoom[1],
                           angle=transform.theta,
@@ -996,15 +1005,19 @@ class SegmentPath:
         '''
         x = [p[0] for p in self.path if not isinstance(p, str)]
         y = [p[1] for p in self.path if not isinstance(p, str)]
+        if not x:
+            return BBox(0, 0, 0, 0)
         return BBox(min(x), min(y), max(x), max(y))
 
     def doreverse(self, centerx: float) -> None:
         ''' Reverse the path (flip horizontal about the center of the path) '''
-        #self.path = [util.mirrorx(p, centerx) for p in self.path[::-1]]
-        
+        self.path = [p if isinstance(p, str) else util.mirrorx(p, centerx)
+                     for p in self.path[::-1]]
+
     def doflip(self) -> None:
         ''' Vertically flip the element '''
-        #self.path = [util.flip(p) for p in self.path]
+        self.path = [p if isinstance(p, str) else util.flip(p)
+                     for p in self.path]
 
     def draw(self, fig, transform, **style) -> None:
         ''' Draw the segment

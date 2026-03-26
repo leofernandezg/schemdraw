@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install flake8
+      # Non-blocking: existing codebase has pre-existing formatting
+      # warnings (whitespace, indentation, line length). These will
+      # be addressed in a future PR. Remove continue-on-error once
+      # the cleanup is done.
+      - name: Run flake8 (informational)
+        run: flake8 schemdraw/
+        continue-on-error: true
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install .
+          pip install ".[matplotlib,svgmath]"
+          pip install pytest nbval ipykernel
+          python -m ipykernel install --user
+
+      - name: Run tests
+        run: python -m pytest --nbval-lax test/ -q

@@ -262,7 +262,7 @@ class Figure:
         et = ET.Element('path')
         d = 'M {},{} '.format(*self.xform(x[0], y[0]))
         for xx, yy in zip(x[1:], y[1:]):
-            if str(xx) == 'nan' or str(yy) == 'nan':
+            if not (math.isfinite(xx) and math.isfinite(yy)):
                 d += 'M '
                 continue
             elif not d.endswith('M '):
@@ -586,6 +586,8 @@ class Figure:
             et = ET.Element('g')
             imageelm = ET.fromstring(imgdat.decode())
             imgwidth = parse_size_to_px(imageelm.get('width', '0'))
+            if imgwidth == 0:
+                raise ValueError('SVG image has no valid width attribute; cannot scale.')
             s = width / imgwidth
             xform = f'translate({x0}, {y0}) scale({s})'
             if rotate:
@@ -596,7 +598,6 @@ class Figure:
             image_b64 = base64.encodebytes(imgdat).decode()
             et = ET.Element('image')
             et.set('xlink:href', f'data:image/{imgfmt};base64,{image_b64}')
-            self.svgelements.append((zorder, et))
             self._need_xlink = True
 
             et.set('x', fmt(x0))
