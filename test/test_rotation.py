@@ -6,8 +6,7 @@
     (rotation + transform.theta) % 360.
 '''
 import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 
 from schemdraw.segments import SegmentText
 from schemdraw.transform import Transform

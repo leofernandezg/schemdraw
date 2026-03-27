@@ -4,8 +4,7 @@
     reverse, flip, and various element types.
 '''
 import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 
 import schemdraw
 import schemdraw.elements as elm

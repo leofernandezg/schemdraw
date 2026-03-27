@@ -3,8 +3,7 @@
     Exercises all element types defined in lines.py to improve coverage.
 '''
 import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 
 import schemdraw
 import schemdraw.elements as elm

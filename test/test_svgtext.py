@@ -4,8 +4,7 @@
     and XML special character handling.
 '''
 import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 
 from schemdraw.backends.svgtext import (
     mathtextsvg, string_width, text_approx_size, text_tosvg

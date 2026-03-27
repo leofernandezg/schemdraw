@@ -4,9 +4,8 @@
     zero width attribute caused ZeroDivisionError.
 '''
 import sys
-import os
+
 import io
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from schemdraw.backends.svg import Figure
 from schemdraw.types import BBox
