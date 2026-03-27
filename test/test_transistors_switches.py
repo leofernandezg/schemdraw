@@ -112,6 +112,34 @@ def test_hemt():
     assert len(d.elements) == 1
 
 
+def test_bjt2_variants():
+    ''' Bjt2 with different parameters '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.transistors import BjtPnp2c, BjtPnp2c2
+    d += BjtPnp2c()
+    d += BjtPnp2c2()
+    assert len(d.elements) == 2
+
+
+def test_bjt_no_circle():
+    ''' BJT without circle '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.BjtNpn(circle=False)
+    d += elm.BjtPnp(circle=False)
+    assert len(d.elements) == 2
+
+
+def test_fet_bulk():
+    ''' FET with bulk terminal '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet(bulk=True)
+    d += elm.PFet(bulk=True)
+    assert len(d.elements) == 2
+
+
 def test_transistor_anchors():
     setup()
     d = schemdraw.Drawing(show=False)
@@ -193,6 +221,58 @@ def test_switch_reed():
     d = schemdraw.Drawing(show=False)
     from schemdraw.elements.switches import SwitchReed
     d += SwitchReed()
+    assert len(d.elements) == 1
+
+
+def test_switch_open_close():
+    ''' Switch with action parameter '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.Switch(action='open')
+    d += elm.Switch(action='close')
+    assert len(d.elements) == 2
+
+
+def test_switch_spdt_action():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchSpdt
+    d += SwitchSpdt(action='open')
+    d += SwitchSpdt(action='close')
+    assert len(d.elements) == 2
+
+
+def test_switch_dpdt_action():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchDpdt
+    d += SwitchDpdt(action='open')
+    d += SwitchDpdt(action='close')
+    assert len(d.elements) == 2
+
+
+def test_switch_dpst_action():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchDpst
+    d += SwitchDpst(action='open')
+    d += SwitchDpst(action='close')
+    assert len(d.elements) == 2
+
+
+def test_switch_dip_options():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchDIP
+    d += SwitchDIP(n=4, pattern=(True, False, True, False))
+    assert len(d.elements) == 1
+
+
+def test_switch_rotary_options():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchRotary
+    d += SwitchRotary(n=6, position=3)
     assert len(d.elements) == 1
 
 

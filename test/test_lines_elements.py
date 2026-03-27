@@ -196,10 +196,28 @@ def test_zlabel():
 
 def test_voltage_label_arc():
     setup()
-    with schemdraw.Drawing(show=False) as d:
-        r = d.add(elm.Resistor())
-        from schemdraw.elements.lines import VoltageLabelArc
-        d += VoltageLabelArc().at(r)
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    from schemdraw.elements.lines import VoltageLabelArc
+    d += VoltageLabelArc().at(r).label('V')
+    assert len(d.elements) == 2
+
+
+def test_voltage_label_arc_reversed():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    from schemdraw.elements.lines import VoltageLabelArc
+    d += VoltageLabelArc(reverse=True).at(r)
+    assert len(d.elements) == 2
+
+
+def test_voltage_label_arc_bottom():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    from schemdraw.elements.lines import VoltageLabelArc
+    d += VoltageLabelArc().at(r).label('V', loc='bottom')
     assert len(d.elements) == 2
 
 
