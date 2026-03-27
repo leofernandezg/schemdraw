@@ -241,6 +241,108 @@ def test_line_with_styling():
     assert b'<svg' in svg
 
 
+def test_encircle_with_draw():
+    ''' Encircle drawn to SVG exercises anchor computation '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    c = d.add(elm.Capacitor().down())
+    d += elm.Encircle([r, c], padx=0.3, pady=0.3)
+    svg = d.get_imagedata('svg')
+    assert len(svg) > 100
+
+
+def test_encircle_box_with_draw():
+    ''' EncircleBox drawn to SVG exercises anchor computation '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    c = d.add(elm.Capacitor().down())
+    d += elm.EncircleBox([r, c], padx=0.3, pady=0.3)
+    svg = d.get_imagedata('svg')
+    assert len(svg) > 100
+
+
+def test_encircle_anchors():
+    ''' Encircle has cardinal and intercardinal anchors '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    enc = d.add(elm.Encircle([r]))
+    assert hasattr(enc, 'N')
+    assert hasattr(enc, 'SE')
+    assert hasattr(enc, 'NNE')
+
+
+def test_encircle_box_anchors():
+    ''' EncircleBox has cardinal anchors '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    enc = d.add(elm.EncircleBox([r]))
+    assert hasattr(enc, 'N')
+    assert hasattr(enc, 'SE')
+
+
+def test_current_label_arrow():
+    ''' CurrentLabel with arrow (exercises _place_segment) '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    d += elm.CurrentLabel(ofst=0.3).at(r).label('I')
+    d += elm.CurrentLabel(ofst=0.3, reverse=True).at(r)
+    assert len(d.elements) == 3
+
+
+def test_current_label_arrow_bottom():
+    ''' CurrentLabel on bottom side '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    d += elm.CurrentLabel(loc='bottom').at(r)
+    assert len(d.elements) == 2
+
+
+def test_voltage_label_arrow_at_element():
+    ''' VoltageLabelArrow placed at an element '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor())
+    from schemdraw.elements.lines import VoltageLabelArc
+    d += VoltageLabelArc().at(r).label('V')
+    d += VoltageLabelArc(reverse=True).at(r)
+    fig = d.draw(show=False)
+    assert len(d.elements) == 3
+
+
+def test_voltage_label_arrow_rotated():
+    ''' VoltageLabelArrow on rotated element '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    r = d.add(elm.Resistor().down())
+    from schemdraw.elements.lines import VoltageLabelArc
+    d += VoltageLabelArc().at(r)
+    fig = d.draw(show=False)
+    assert len(d.elements) == 2
+
+
+def test_wire_idot():
+    ''' Wire with idot parameter '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.Line().idot()
+    d += elm.Line().idot(open=True)
+    assert len(d.elements) == 2
+
+
+def test_arc2_delta():
+    ''' Arc2 with delta parameter '''
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.Arc2().delta(dx=2, dy=1)
+    assert len(d.elements) == 1
+
+
 if __name__ == '__main__':
     tests = [v for k, v in sorted(globals().items()) if k.startswith('test_')]
     passed = 0

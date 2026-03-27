@@ -262,6 +262,16 @@ def test_segment_text_rotation():
     assert len(svg) > 100
 
 
+def test_segment_with_color_tuple():
+    ''' Segments with RGB tuple colors '''
+    schemdraw.use('svg')
+    d = schemdraw.Drawing(show=False)
+    d += elm.Resistor().color((0.5, 0.2, 0.8))
+    fig = d.draw(show=False)
+    svg = d.get_imagedata('svg')
+    assert b'rgb(' in svg
+
+
 def test_drawing_renders_all_segment_types():
     ''' End-to-end: drawing with various segment types produces SVG '''
     schemdraw.use('svg')

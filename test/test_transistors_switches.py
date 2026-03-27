@@ -276,6 +276,165 @@ def test_switch_rotary_options():
     assert len(d.elements) == 1
 
 
+# --- contacts=False and nc=True variants ---
+
+def test_switch_no_contacts():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.Switch(contacts=False)
+    assert len(d.elements) == 1
+
+
+def test_switch_nc():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.Switch(nc=True)
+    assert len(d.elements) == 1
+
+
+def test_switch_spdt2_no_contacts():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchSpdt2
+    d += SwitchSpdt2(contacts=False)
+    assert len(d.elements) == 1
+
+
+def test_button_no_contacts():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import Button
+    d += Button(contacts=False)
+    assert len(d.elements) == 1
+
+
+def test_switch_dpst_no_contacts():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchDpst
+    d += SwitchDpst(contacts=False)
+    assert len(d.elements) == 1
+
+
+def test_switch_dpdt_no_contacts():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.switches import SwitchDpdt
+    d += SwitchDpdt(contacts=False)
+    assert len(d.elements) == 1
+
+
+# --- Transistor parameter variants ---
+
+def test_mosfet_with_diode():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet(diode=True)
+    d += elm.PFet(diode=True)
+    assert len(d.elements) == 2
+
+
+def test_mosfet_with_circle():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet(circle=True)
+    d += elm.PFet(circle=True)
+    assert len(d.elements) == 2
+
+
+def test_mosfet2_with_diode():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet2(diode=True)
+    d += elm.PFet2(diode=True)
+    assert len(d.elements) == 2
+
+
+def test_mosfet2_with_circle():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet2(circle=True)
+    d += elm.PFet2(circle=True)
+    assert len(d.elements) == 2
+
+
+def test_nfet2_bulk():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet2(bulk=True)
+    assert len(d.elements) == 1
+
+
+def test_pfet2_bulk():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.PFet2(bulk=True)
+    assert len(d.elements) == 1
+
+
+def test_nfet2_reverse():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.NFet2().reverse()
+    assert len(d.elements) == 1
+
+
+def test_pfet2_reverse():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.PFet2().reverse()
+    assert len(d.elements) == 1
+
+
+def test_jfet2_circle():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.JFetN2(circle=True)
+    d += elm.JFetP2(circle=True)
+    assert len(d.elements) == 2
+
+
+def test_jfet2_reverse():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.JFetN2().reverse()
+    d += elm.JFetP2().reverse()
+    assert len(d.elements) == 2
+
+
+def test_bjt2_circle():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.BjtNpn2(circle=True)
+    d += elm.BjtPnp2(circle=True)
+    assert len(d.elements) == 2
+
+
+def test_bjt2_reverse():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    d += elm.BjtNpn2().reverse()
+    d += elm.BjtPnp2().reverse()
+    assert len(d.elements) == 2
+
+
+def test_hemt_split():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.transistors import Hemt
+    d += Hemt(split=True)
+    assert len(d.elements) == 1
+
+
+def test_hemt_arrow():
+    setup()
+    d = schemdraw.Drawing(show=False)
+    from schemdraw.elements.transistors import Hemt
+    d += Hemt(arrow='>')
+    d += Hemt(arrow='<')
+    assert len(d.elements) == 2
+
+
 if __name__ == '__main__':
     tests = [v for k, v in sorted(globals().items()) if k.startswith('test_')]
     passed = 0
