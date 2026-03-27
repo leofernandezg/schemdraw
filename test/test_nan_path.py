@@ -4,8 +4,7 @@
     math.isfinite() to also handle inf values.
 '''
 import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
 
 import math
 from schemdraw.backends.svg import Figure
